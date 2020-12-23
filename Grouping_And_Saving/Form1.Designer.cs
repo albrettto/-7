@@ -40,12 +40,6 @@
             this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
             this.Color_ToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.Size_toolStripLabel = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.Plus_toolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-            this.Minus_toolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.Group_ToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
             this.Write_ToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -72,12 +66,6 @@
             this.toolStripSeparator13,
             this.Color_ToolStripButton,
             this.toolStripSeparator2,
-            this.Size_toolStripLabel,
-            this.toolStripSeparator5,
-            this.Plus_toolStripButton,
-            this.toolStripSeparator7,
-            this.Minus_toolStripButton,
-            this.toolStripSeparator8,
             this.Group_ToolStripButton,
             this.toolStripSeparator14,
             this.Write_ToolStripButton,
@@ -171,52 +159,6 @@
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-            // 
-            // Size_toolStripLabel
-            // 
-            this.Size_toolStripLabel.ForeColor = System.Drawing.Color.Crimson;
-            this.Size_toolStripLabel.Name = "Size_toolStripLabel";
-            this.Size_toolStripLabel.Size = new System.Drawing.Size(50, 22);
-            this.Size_toolStripLabel.Text = "Размер:";
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
-            // 
-            // Plus_toolStripButton
-            // 
-            this.Plus_toolStripButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.Plus_toolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.Plus_toolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("Plus_toolStripButton.Image")));
-            this.Plus_toolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.Plus_toolStripButton.Name = "Plus_toolStripButton";
-            this.Plus_toolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.Plus_toolStripButton.Text = "toolStripButton3";
-            this.Plus_toolStripButton.ToolTipText = "Увеличиваем фигуру";
-            this.Plus_toolStripButton.Click += new System.EventHandler(this.Plus_toolStripButton_Click);
-            // 
-            // toolStripSeparator7
-            // 
-            this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
-            // 
-            // Minus_toolStripButton
-            // 
-            this.Minus_toolStripButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.Minus_toolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.Minus_toolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("Minus_toolStripButton.Image")));
-            this.Minus_toolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.Minus_toolStripButton.Name = "Minus_toolStripButton";
-            this.Minus_toolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.Minus_toolStripButton.Text = "toolStripButton4";
-            this.Minus_toolStripButton.ToolTipText = "Уменьшаем фигуру";
-            this.Minus_toolStripButton.Click += new System.EventHandler(this.Minus_toolStripButton_Click);
-            // 
-            // toolStripSeparator8
-            // 
-            this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(6, 25);
             // 
             // Group_ToolStripButton
             // 
@@ -313,12 +255,6 @@
         private System.Windows.Forms.ToolStripButton Clear_toolStripButton;
         private System.Windows.Forms.ToolStripButton Color_ToolStripButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ToolStripLabel Size_toolStripLabel;
-        private System.Windows.Forms.ToolStripButton Plus_toolStripButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
-        private System.Windows.Forms.ToolStripButton Minus_toolStripButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripLabel Shape_toolStripLabel;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
