@@ -1,0 +1,10 @@
+C:\Users\User\OneDrive\Рабочий стол\УНИВЕР\2 КУРС\3 СЕМЕСТР\ООП\Лабораторная работа 7\Grouping_And_Saving\bin\Debug\Grouping_And_Saving.exe.config
+C:\Users\User\OneDrive\Рабочий стол\УНИВЕР\2 КУРС\3 СЕМЕСТР\ООП\Лабораторная работа 7\Grouping_And_Saving\bin\Debug\Grouping_And_Saving.exe
+C:\Users\User\OneDrive\Рабочий стол\УНИВЕР\2 КУРС\3 СЕМЕСТР\ООП\Лабораторная работа 7\Grouping_And_Saving\bin\Debug\Grouping_And_Saving.pdb
+C:\Users\User\OneDrive\Рабочий стол\УНИВЕР\2 КУРС\3 СЕМЕСТР\ООП\Лабораторная работа 7\Grouping_And_Saving\obj\Debug\Grouping_And_Saving.csprojAssemblyReference.cache
+C:\Users\User\OneDrive\Рабочий стол\УНИВЕР\2 КУРС\3 СЕМЕСТР\ООП\Лабораторная работа 7\Grouping_And_Saving\obj\Debug\Grouping_And_Saving.Properties.Resources.resources
+C:\Users\User\OneDrive\Рабочий стол\УНИВЕР\2 КУРС\3 СЕМЕСТР\ООП\Лабораторная работа 7\Grouping_And_Saving\obj\Debug\Grouping_And_Saving.csproj.GenerateResource.cache
+C:\Users\User\OneDrive\Рабочий стол\УНИВЕР\2 КУРС\3 СЕМЕСТР\ООП\Лабораторная работа 7\Grouping_And_Saving\obj\Debug\Grouping_And_Saving.csproj.CoreCompileInputs.cache
+C:\Users\User\OneDrive\Рабочий стол\УНИВЕР\2 КУРС\3 СЕМЕСТР\ООП\Лабораторная работа 7\Grouping_And_Saving\obj\Debug\Grouping_And_Saving.exe
+C:\Users\User\OneDrive\Рабочий стол\УНИВЕР\2 КУРС\3 СЕМЕСТР\ООП\Лабораторная работа 7\Grouping_And_Saving\obj\Debug\Grouping_And_Saving.pdb
+C:\Users\User\OneDrive\Рабочий стол\УНИВЕР\2 КУРС\3 СЕМЕСТР\ООП\Лабораторная работа 7\Grouping_And_Saving\obj\Debug\Grouping_And_Saving.Form1.resources
