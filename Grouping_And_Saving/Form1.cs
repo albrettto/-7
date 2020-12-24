@@ -24,6 +24,7 @@ namespace Grouping_And_Saving
         public class Shape // Родительский (класс) фигуры
         {
             public int x, y;
+            public int X_min, X_max, Y_min, Y_max;
             protected Color color = default_color;
             private bool is_selected = false;
             public Shape()
@@ -56,6 +57,11 @@ namespace Grouping_And_Saving
             public virtual void Add_to_Group(ref Shape shape) { }
             public virtual void Ungroup(ref Storage storage, int c) { }
             public virtual void Choice(ref StreamReader sr, ref Shape shape, CreateShape createShape) { }
+            public virtual int getX_min() { return 0; }
+            public virtual int getX_max() { return 0; }
+            public virtual int getY_min() { return 0; }
+            public virtual int getY_max() { return 0; }
+
         };
         public class CreateShape : Shape
         {
@@ -131,6 +137,10 @@ namespace Grouping_And_Saving
                 this.radius = Convert.ToInt32(radius);
                 SetColor(Color.FromArgb(Convert.ToInt32(color)));
             }
+            public override int getX_min() { return x; }
+            public override int getX_max() { return x + 2 * radius; }
+            public override int getY_min() { return y; }
+            public override int getY_max() { return y + 2 * radius; }
         }
         class Triangle : Shape // Класс треугольника
         {
@@ -188,6 +198,10 @@ namespace Grouping_And_Saving
                 this.size = Convert.ToInt32(size);
                 SetColor(Color.FromArgb(Convert.ToInt32(color)));
             }
+            public override int getX_min() { return x; }
+            public override int getX_max() { return x + size; }
+            public override int getY_min() { return y; }
+            public override int getY_max() { return y + size; }
         }
         class Square : Shape // Класс квадрата
         {
@@ -237,11 +251,13 @@ namespace Grouping_And_Saving
                 this.size = Convert.ToInt32(size);
                 SetColor(Color.FromArgb(Convert.ToInt32(color)));
             }
+            public override int getX_min() { return x; }
+            public override int getX_max() { return x + size; }
+            public override int getY_min() { return y; }
+            public override int getY_max() { return y + size; }
         }
-        #endregion 
         class Group : Shape
         {
-            public int X_r, X_l, Y_r, Y_l;
             public int maxcount = 10;
             public Shape[] group;
             public int count;
@@ -291,19 +307,39 @@ namespace Grouping_And_Saving
                     group[i].Draw_Shape(pen, solidBrush, Canvas_Panel);
                 }
             }
-            public override void Move_x(int x, Panel Canvas_Panel)
+            public void Group_Borders()
             {
+                X_min = int.MaxValue; X_max = 0; Y_min = int.MaxValue; Y_max = 0;
                 for (int i = 0; i < count; ++i)
                 {
-                    group[i].Move_x(x, Canvas_Panel);
+                    int f = 0;
+                    f = group[i].getX_min();
+                    if (f < X_min)
+                        X_min = f;
+                    f = group[i].getX_max();
+                    if (f > X_max)
+                        X_max = f;
+                    f = group[i].getY_min();
+                    if (f < Y_min)
+                        Y_min = f;
+                    f = group[i].getY_max();
+                    if (f > Y_max)
+                        Y_max = f;
                 }
+            }
+            public override void Move_x(int x, Panel Canvas_Panel)
+            {
+                Group_Borders();
+                if ((X_min + x) > 0 && (X_max + x) < Canvas_Panel.ClientSize.Width)
+                    for (int i = 0; i < count; ++i)
+                        group[i].Move_x(x, Canvas_Panel);
             }
             public override void Move_y(int y, Panel Canvas_Panel)
             {
-                for (int i = 0; i < count; ++i)
-                {
-                    group[i].Move_y(y, Canvas_Panel);
-                }
+                Group_Borders();
+                if ((Y_min + y) > 0 && (Y_max + y) < Canvas_Panel.ClientSize.Height)
+                    for (int i = 0; i < count; ++i)
+                        group[i].Move_y(y, Canvas_Panel);
             }
             public override void Change_Size(int size)
             {
@@ -329,6 +365,7 @@ namespace Grouping_And_Saving
                 }
             }
         }
+        #endregion
         public class Storage
         {
             public Shape[] objects;
