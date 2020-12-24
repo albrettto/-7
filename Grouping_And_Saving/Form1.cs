@@ -18,18 +18,18 @@ namespace Grouping_And_Saving
         {
             InitializeComponent();
             model = new MVC();
-            model.observers += new System.EventHandler(this.updateFromMVC);
+            model.observers += new System.EventHandler(this.UpdateFromMVC);
         }
-        class Shape // Родительский (класс) фигуры
+        #region Классы фигур
+        public class Shape // Родительский (класс) фигуры
         {
             public int x, y;
-            private Color color = default_color;
+            protected Color color = default_color;
             private bool is_selected = false;
-            //public int move = 60; // смещение от цетра к вершинам
             public Shape()
             {
             }
-            public void SetColor(Color color)
+            public virtual void SetColor(Color color)
             {
                 this.color = color;
             }
@@ -50,10 +50,43 @@ namespace Grouping_And_Saving
             public virtual void Move_y(int y, Panel Canvas_Panel) { }
             public virtual void Change_Size(int size) { }
             public virtual bool Check_Shape(int x, int y) { return false; }
+            public virtual string Save() { return ""; }
+            public virtual void Load(string x, string y, string c, string color) { }
+            public virtual void Load(ref StreamReader sr, Shape Shape, CreateShape createShape) { }
+            public virtual void Add_to_Group(ref Shape shape) { }
+            public virtual void Ungroup(ref Storage storage, int c) { }
+            public virtual void Choice(ref StreamReader sr, ref Shape shape, CreateShape createShape) { }
         };
+        public class CreateShape : Shape
+        {
+            public override void Choice(ref StreamReader sr, ref Shape shape, CreateShape createShape)
+            {
+                string str = sr.ReadLine();
+                switch (str)
+                {   // В зависимости какая фигура выбрана
+                    case "Circle":
+                        shape = new Circle();
+                        shape.Load(sr.ReadLine(), sr.ReadLine(), sr.ReadLine(), sr.ReadLine());
+                        break;
+                    case "Triangle":
+                        shape = new Triangle();
+                        shape.Load(sr.ReadLine(), sr.ReadLine(), sr.ReadLine(), sr.ReadLine());
+                        break;
+                    case "Square":
+                        shape = new Square();
+                        shape.Load(sr.ReadLine(), sr.ReadLine(), sr.ReadLine(), sr.ReadLine());
+                        break;
+                    case "Group":
+                        shape = new Group();
+                        shape.Load(ref sr, shape, createShape);
+                        break;
+                }
+            }
+        }
         class Circle : Shape // Класс круга
         {
             public int radius = 30;
+            public Circle() { }
             public Circle(int x, int y)
             {
                 this.x = x - radius;
@@ -87,10 +120,22 @@ namespace Grouping_And_Saving
                 return ((x - this.x - radius) * (x - this.x - radius) + 
                         (y - this.y - radius) * (y - this.y - radius)) < (radius * radius);
             }
+            public override string Save()
+            {
+                return "Circle" + "\n" + x + "\n" + y + "\n" + radius + "\n" + GetColor().ToArgb().ToString();
+            }
+            public override void Load(string x, string y, string radius, string color)
+            {
+                this.x = Convert.ToInt32(x);
+                this.y = Convert.ToInt32(y);
+                this.radius = Convert.ToInt32(radius);
+                SetColor(Color.FromArgb(Convert.ToInt32(color)));
+            }
         }
         class Triangle : Shape // Класс треугольника
         {
             public int size = 60;
+            public Triangle() { }
             public Triangle(int x, int y) // Конструктор с параметрами
             {
                 this.x = x - size / 2;
@@ -132,10 +177,22 @@ namespace Grouping_And_Saving
                 int c = (points[2].X - x) * (points[0].Y - points[2].Y) - (points[0].X - points[2].X) * (points[2].Y - y);
                 return ((a > 0 && b > 0 && c > 0) || (a < 0 && b < 0 && c < 0));
             }
+            public override string Save()
+            {
+                return "Triangle" + "\n" + x + "\n" + y + "\n" + size + "\n" + GetColor().ToArgb().ToString();
+            }
+            public override void Load(string x, string y, string size, string color)
+            {
+                this.x = Convert.ToInt32(x);
+                this.y = Convert.ToInt32(y);
+                this.size = Convert.ToInt32(size);
+                SetColor(Color.FromArgb(Convert.ToInt32(color)));
+            }
         }
         class Square : Shape // Класс квадрата
         {
             public int size = 60;
+            public Square() { }
             public Square(int x, int y)
             {
                 this.x = x - size / 2;
@@ -169,8 +226,110 @@ namespace Grouping_And_Saving
                 return (this.x <= x && x <= (this.x + size) &&
                         this.y <= y && y <= (this.y + size));
             }
+            public override string Save()
+            {
+                return "Square" + "\n" + x + "\n" + y + "\n" + size + "\n" + GetColor().ToArgb().ToString();
+            }
+            public override void Load(string x, string y, string size, string color)
+            {
+                this.x = Convert.ToInt32(x);
+                this.y = Convert.ToInt32(y);
+                this.size = Convert.ToInt32(size);
+                SetColor(Color.FromArgb(Convert.ToInt32(color)));
+            }
         }
-        class Storage
+        #endregion 
+        class Group : Shape
+        {
+            public int X_r, X_l, Y_r, Y_l;
+            public int maxcount = 10;
+            public Shape[] group;
+            public int count;
+            public Group()
+            {   // Выделяем maxcount мест в хранилище
+                count = 0;
+                group = new Shape[maxcount];
+                for (int i = 0; i < maxcount; ++i)
+                    group[i] = null;
+            }
+            public override string Save()
+            {
+                string str = "Group" + "\n" + count;
+                for (int i = 0; i < count; ++i)
+                    str += "\n" + group[i].Save();
+                return str;
+            }
+            public override void Load(ref StreamReader sr, Shape shape, CreateShape createShape)
+            {
+                int chislo = Convert.ToInt32(sr.ReadLine());
+                for (int i = 0; i < chislo; ++i)
+                {
+                    createShape.Choice(ref sr, ref shape, createShape);
+                    Add_to_Group(ref shape);
+                }
+            }
+            public override void Add_to_Group(ref Shape shape)
+            {
+                if (count >= maxcount)
+                    return;
+                group[count] = shape;
+                ++count;
+            }
+            public override void Ungroup(ref Storage storage, int c)
+            {
+                storage.Delete_object(c);
+                for (int i = 0; i < count; ++i)
+                {
+                    storage.Add_object(count_elements, ref group[i], count_cells, ref indexin);
+                }
+            }
+            public override void Draw_Shape(Pen pen, Brush solidBrush, Panel Canvas_Panel)
+            {
+                for (int i = 0; i < count; ++i)
+                {
+                    pen.Color = group[i].GetColor();
+                    group[i].Draw_Shape(pen, solidBrush, Canvas_Panel);
+                }
+            }
+            public override void Move_x(int x, Panel Canvas_Panel)
+            {
+                for (int i = 0; i < count; ++i)
+                {
+                    group[i].Move_x(x, Canvas_Panel);
+                }
+            }
+            public override void Move_y(int y, Panel Canvas_Panel)
+            {
+                for (int i = 0; i < count; ++i)
+                {
+                    group[i].Move_y(y, Canvas_Panel);
+                }
+            }
+            public override void Change_Size(int size)
+            {
+                for (int i = 0; i < count; ++i)
+                {
+                    group[i].Change_Size(size);
+                }
+            }
+            public override bool Check_Shape(int x, int y)
+            {
+                for (int i = 0; i < count; ++i)
+                {
+                    if (group[i].Check_Shape(x, y))
+                        return true;
+                }
+                return false;
+            }
+            public override void SetColor(Color color)
+            {
+                for (int i = 0; i < count; ++i)
+                {
+                    group[i].SetColor(color);
+                }
+            }
+        }
+        public class Storage
         {
             public Shape[] objects;
             public Storage(int amount)
@@ -195,13 +354,11 @@ namespace Grouping_And_Saving
                 objects[ind] = new_object;
                 indexin = ind;
             }
-            public void Delete_object(ref int count_elements)
+            public void Delete_object(int ind)
             {   // Удаляет объект из хранилища
-                if (objects[count_elements] != null)
-                {
-                    objects[count_elements] = null;
+                objects[ind] = null;
+                if (count_elements > 0)
                     count_elements--;
-                }
             }
             public bool Is_empty(int count_elements)
             {   // Проверяет занято ли место в хранилище
@@ -223,9 +380,7 @@ namespace Grouping_And_Saving
                 for (int i = 0; i < size; ++i)
                     new_storage.objects[i] = objects[i];
                 for (int i = size; i < (size * 2) - 1; ++i)
-                {
                     new_storage.objects[i] = null;
-                }
                 size *= 2;
                 Initialization(size);
                 for (int i = 0; i < size; ++i)
@@ -248,19 +403,47 @@ namespace Grouping_And_Saving
                 return figure;
             }
         }
-        
-        #region declaring variables
+        #region Объявление переменных
         string figure_now; // Хранит значение нынешней фигуры
         static int count_cells = 5; // Кол-во ячеек в хранилище
-        int indexin = 0; // Индекс, в какое место был помещён круг
-        int count_elements = 0; // Кол-во элементов в хранилище
+        static int indexin = 0; // Индекс, в какое место был помещён круг
+        static int count_elements = 0; // Кол-во элементов в хранилище
         Storage storage = new Storage(count_cells); // Хранилище объектов
         static Color default_color = Color.Black; // Цвет по умолчанию
-        Pen pen = new Pen(default_color, 3); // Ручка для рисования
         Shape shape = new Shape(); // Объект класса Shape
-        SolidBrush solidBrush = new SolidBrush(Color.LightGray); // Цвет для заливки
-        SolidBrush defaultBrush = new SolidBrush(Color.Transparent);
         #endregion
+        #region Проверки
+        private int Check_Shape(ref Storage storage, int x, int y, int start)
+        {
+            // Проверяет есть ли уже фигура с такими же координатами в хранилище
+            if (storage.Occupied(count_cells) != 0)
+            {
+                for (int i = start; i < count_cells; ++i)
+                {
+                    if (!storage.Is_empty(i))
+                    {   // Если под i индексом в хранилище есть объект
+                        if (storage.objects[i].Check_Shape(x, y))
+                            return i;
+                    }
+                }
+            }
+            return -1;
+        }
+        static public void Check_borders(int f, int number, int limit1, int limit2, ref int coord)
+        {   // Проверка на выход фигуры за границы
+            if (f > 0 && f < limit1)
+                coord += number;
+            else
+            {
+                if (f <= 0)
+                    coord = 1;
+                else
+                    if (f >= limit2)
+                    coord = limit2;
+            }
+        }
+        #endregion
+        #region Манипуляции с фигурами
         private void Move_y(ref Storage storage, int y)
         {   // Функция для перемещения фигур по оси Y
             for (int i = 0; i < count_cells; ++i)
@@ -282,45 +465,8 @@ namespace Grouping_And_Saving
                     if (storage.objects[i].IsSelected())
                         storage.objects[i].Change_Size(size);
         }
-        private int Check_Shape(ref Storage storage, int x, int y, int start)
-        {
-            // Проверяет есть ли уже фигура с такими же координатами в хранилище
-            if (storage.Occupied(count_cells) != 0)
-            {
-                for (int i = start; i < count_cells; ++i)
-                {
-                    if (!storage.Is_empty(i))
-                    {   // Если под i индексом в хранилище есть объект
-                        if (storage.objects[i].Check_Shape(x, y))
-                            return i;
-                    }
-                }
-            }
-            return -1;
-        }
-        private void Remove_Selected(ref Storage storage)
-        {   // Удаляет выделенные элементы из хранилища
-            for (int i = 0; i < count_cells; ++i)
-                if (!storage.Is_empty(i))
-                    if (storage.objects[i].IsSelected())
-                    {
-                        storage.Delete_object(ref i);
-                        count_elements--;
-                    }
-        }
-        static public void Check_borders(int f, int number, int limit1, int limit2, ref int coord)
-        {   // Проверка на выход фигуры за границы
-            if (f > 0 && f < limit1)
-                coord += number;
-            else
-            {
-                if (f <= 0)
-                    coord = 1;
-                else
-                    if (f >= limit2)
-                    coord = limit2;
-            }
-        }
+        #endregion
+        #region Обработчики Событий
         private void Canvas_Panel_MouseDown(object sender, MouseEventArgs e)//Обработчик нажатия на полотно
         {
             int ind = Check_Shape(ref storage, e.X, e.Y, 0);
@@ -396,6 +542,18 @@ namespace Grouping_And_Saving
                     Move_x(ref storage, 5);
             Redraw_Shapes(ref storage);
         }
+        private void Color_ToolStripButton_Click(object sender, EventArgs e)
+        {
+            if (ColorDialog.ShowDialog() == DialogResult.Cancel)
+                return;
+            for (int i = 0; i < count_cells; ++i)
+                if (!storage.Is_empty(i))
+                    if (storage.objects[i].IsSelected())
+                    {
+                        storage.objects[i].SetColor(ColorDialog.Color);
+                        Redraw_Shapes(ref storage);
+                    }
+        }
         private void Circle_ToolStripButton_Click(object sender, EventArgs e)
         {
             figure_now = "Круг";
@@ -411,70 +569,85 @@ namespace Grouping_And_Saving
             figure_now = "Квадрат";
             model.setFigure(figure_now);
         }
-        private void Color_ToolStripButton_Click(object sender, EventArgs e)
-        {
-            if (ColorDialog.ShowDialog() == DialogResult.Cancel)
-                return;
-            for (int i = 0; i < count_cells; ++i)
-                if(!storage.Is_empty(i))
-                    if (storage.objects[i].IsSelected())
-                    {
-                        storage.objects[i].SetColor(ColorDialog.Color);
-                        Redraw_Shapes(ref storage);
-                    }
-        }
         private void Group_ToolStripButton_Click(object sender, EventArgs e)
         {
-
+            Shape group = new Group();
+            for (int i = 0; i < count_cells; ++i)
+            {
+                if (!storage.Is_empty(i))
+                    if (storage.objects[i].IsSelected())
+                    {
+                        group.Add_to_Group(ref storage.objects[i]);
+                        storage.Delete_object(i);
+                    }
+            }
+            storage.Add_object(count_elements, ref group, count_cells, ref indexin);
         }
+        private void Ungrouping_ToolStripButton_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < count_cells; ++i)
+            {
+                if (!storage.Is_empty(i))
+                    if (storage.objects[i].IsSelected())
+                    {
+                        storage.objects[i].Ungroup(ref storage, i);
+                        return;
+                    }
+            }
+        }
+
+        // создаем каталог для файла
+        string path = @"C:\Users\User\OneDrive\Рабочий стол\УНИВЕР\2 КУРС\3 СЕМЕСТР\ООП\Лабораторная работа 7\File.txt";
         private void Write_ToolStripButton_Click(object sender, EventArgs e)
         {
-            // создаем каталог для файла
-            string path = @"C:\Users\User\OneDrive\Рабочий стол\УНИВЕР\2 КУРС\3 СЕМЕСТР\ООП\Лабораторная работа 7";
-            DirectoryInfo dirInfo = new DirectoryInfo(path);
-            if (!dirInfo.Exists)
-                dirInfo.Create();
-            
-
-            // запись в файл
-            using (FileStream fstream = new FileStream($@"{path}\figures.txt", FileMode.OpenOrCreate))
+            using (StreamWriter sw = new StreamWriter(path, false, System.Text.Encoding.Default))
             {
-                string text = count_elements.ToString();
-                // преобразуем строку в байты
-                byte[] array = System.Text.Encoding.Default.GetBytes(text + "\n");
-                fstream.Write(array, 0, array.Length);
+                sw.WriteLine(storage.Occupied(count_cells));
                 for (int i = 0; i < count_cells; ++i)
                 {
                     if (!storage.Is_empty(i))
                     {
-                        //text = storage.objects[i].move.ToString();
-                        array = System.Text.Encoding.Default.GetBytes(text + "\n");
-                        // запись массива байтов в файл
-                        fstream.Write(array, 0, array.Length);
+                        sw.WriteLine(storage.objects[i].Save());
                     }
                 }
             }
         }
         private void Read_ToolStripButton_Click(object sender, EventArgs e)
         {
-
+            StreamReader sr = new StreamReader(path, System.Text.Encoding.Default);
+            {
+                string str = sr.ReadLine();
+                int strend = Convert.ToInt32(str);
+                for (int i = 0; i < strend; ++i)
+                {
+                    Shape shape = new Shape();
+                    CreateShape create = new CreateShape();
+                    create.Choice(ref sr, ref shape, create);
+                    if (count_elements == count_cells)
+                        storage.Increase_Storage(ref count_cells);
+                    storage.Add_object(count_elements, ref shape, count_cells, ref indexin);
+                    ++count_elements;
+                }
+                for(int i = 0; i < count_cells; ++i)
+                    if(!storage.Is_empty(i))
+                            Draw_Shape(ref storage, i);
+                sr.Close();
+            }
         }
         private void Clear_toolStripButton_Click(object sender, EventArgs e)
         {
             Canvas_Panel.Refresh();//Обновляем панель
             for (int i = 0; i < count_cells; ++i)
-                storage.Delete_object(ref i); // Удаляем объект из хранилища
+                storage.Delete_object(i); // Удаляем объект из хранилища
             count_elements = 0; // Кол-во элементов в хранилище обнуляем 
         }
-        void Redraw_Shapes(ref Storage storage)//Отрисовка объектов 
-        {
-            Canvas_Panel.Refresh();
-            for (int i = 0; i < count_cells; ++i)
-                if (!storage.Is_empty(i))
-                    Draw_Shape(ref storage, i);
-        }
+        #endregion
+        #region Рисовка и перерисовка фигур
         void Draw_Shape(ref Storage storage, int index)
         {
+            Pen pen = new Pen(default_color, 3); // Ручка для рисования
+            SolidBrush solidBrush = new SolidBrush(Color.LightGray); // Цвет для заливки
+            SolidBrush defaultBrush = new SolidBrush(Color.Transparent);
             if (!storage.Is_empty(index))
             {
                 pen.Color = storage.objects[index].GetColor();
@@ -484,6 +657,15 @@ namespace Grouping_And_Saving
                     storage.objects[index].Draw_Shape(pen, defaultBrush, Canvas_Panel);
             }
         }
+        void Redraw_Shapes(ref Storage storage)//Отрисовка объектов 
+        {
+            Canvas_Panel.Refresh();
+            for (int i = 0; i < count_cells; ++i)
+                if (!storage.Is_empty(i))
+                    Draw_Shape(ref storage, i);
+        }
+        #endregion
+        #region Работа с выделением
         void Deselect(ref Storage storage)//Отменяет выделение у всех объектов
         {
             for (int i = 0; i < count_cells; ++i)
@@ -491,7 +673,18 @@ namespace Grouping_And_Saving
                     if (storage.objects[i].IsSelected())
                         storage.objects[i].Select(false);
         }
-        void updateFromMVC(object sender, EventArgs e)//Изменение выбранной фигуры и подсветка ее кнопки
+        private void Remove_Selected(ref Storage storage)
+        {   // Удаляет выделенные элементы из хранилища
+            for (int i = 0; i < count_cells; ++i)
+                if (!storage.Is_empty(i))
+                    if (storage.objects[i].IsSelected())
+                    {
+                        storage.Delete_object(i);
+                        count_elements--;
+                    }
+        }
+        #endregion
+        void UpdateFromMVC(object sender, EventArgs e)//Изменение выбранной фигуры и подсветка ее кнопки
         {
             Color back_color = Color.Transparent;
             Color selected_back_color = Color.LightPink;

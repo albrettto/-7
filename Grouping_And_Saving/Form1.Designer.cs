@@ -49,6 +49,8 @@
             this.Clear_toolStripButton = new System.Windows.Forms.ToolStripButton();
             this.Canvas_Panel = new System.Windows.Forms.Panel();
             this.ColorDialog = new System.Windows.Forms.ColorDialog();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.Ungrouping_ToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -68,6 +70,8 @@
             this.toolStripSeparator2,
             this.Group_ToolStripButton,
             this.toolStripSeparator14,
+            this.Ungrouping_ToolStripButton,
+            this.toolStripSeparator4,
             this.Write_ToolStripButton,
             this.toolStripSeparator3,
             this.Read_ToolStripButton,
@@ -229,6 +233,23 @@
             this.Canvas_Panel.TabIndex = 1;
             this.Canvas_Panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Canvas_Panel_MouseDown);
             // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
+            // 
+            // Ungrouping_ToolStripButton
+            // 
+            this.Ungrouping_ToolStripButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Ungrouping_ToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("Ungrouping_ToolStripButton.Image")));
+            this.Ungrouping_ToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.Ungrouping_ToolStripButton.Name = "Ungrouping_ToolStripButton";
+            this.Ungrouping_ToolStripButton.Size = new System.Drawing.Size(116, 22);
+            this.Ungrouping_ToolStripButton.Text = "Разгруппировка";
+            this.Ungrouping_ToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            this.Ungrouping_ToolStripButton.ToolTipText = "Разгруппировка";
+            this.Ungrouping_ToolStripButton.Click += new System.EventHandler(this.Ungrouping_ToolStripButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -270,6 +291,8 @@
         private System.Windows.Forms.ToolStripButton Read_ToolStripButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
         private System.Windows.Forms.ToolStripButton Group_ToolStripButton;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripButton Ungrouping_ToolStripButton;
     }
 }
 
